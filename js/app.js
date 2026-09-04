@@ -129,7 +129,7 @@ function runSearch(rawQuery, saveHistory) {
   }
 
   if (saveHistory) {
-    saveSearchHistory(rawQuery);
+    saveSearchHistory(normalizedQuery);
     renderHistory();
   }
 
