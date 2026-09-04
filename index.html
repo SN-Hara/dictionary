@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f9fb">
+  <title>Dictionary Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="ambient ambient-c" aria-hidden="true"></div>
+
+  <main id="app" class="app-shell">
+    <!-- SEARCH SCREEN -->
+    <section id="search-screen" class="screen is-active" aria-label="検索画面">
+      <button class="icon-button settings-button" type="button" data-open-settings aria-label="設定">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4Zm9 3.6-2.05-.8a7.4 7.4 0 0 0-.62-1.48l.88-2.02-1.9-1.9-2.02.88A7.4 7.4 0 0 0 13.8 6.05L13 4h-2l-.8 2.05a7.4 7.4 0 0 0-1.48.62L6.7 5.8 4.8 7.7l.88 2.02a7.4 7.4 0 0 0-.62 1.48L3 12v2l2.05.8c.15.52.36 1.02.62 1.48L4.8 18.3l1.9 1.9 2.02-.88c.46.26.96.47 1.48.62L11 22h2l.8-2.05a7.4 7.4 0 0 0 1.48-.62l2.02.88 1.9-1.9-.88-2.02c.26-.46.47-.96.62-1.48L21 14v-2Z"/>
+        </svg>
+      </button>
+
+      <div class="search-layout">
+        <form id="search-form" class="search-form" novalidate>
+          <div class="search-row">
+            <label class="sr-only" for="search-input">最初の2文字を入力</label>
+            <input
+              id="search-input"
+              class="search-input"
+              type="text"
+              autocomplete="off"
+              inputmode="text"
+              placeholder="最初の2文字を入力"
+              aria-describedby="search-helper search-message"
+            >
+            <button class="primary-button" type="submit">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.15A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+              <span>検索</span>
+            </button>
+          </div>
+          <div class="search-meta-row">
+            <p id="search-message" class="search-message" aria-live="polite"></p>
+            <p id="search-helper" class="search-helper">ひらがなの最初の2文字を入力</p>
+          </div>
+        </form>
+
+        <section class="keyboard-section" aria-label="五十音キーボード">
+          <div id="kana-keyboard" class="kana-keyboard"></div>
+          <div class="keyboard-utility">
+            <button class="kana-key utility-key" type="button" data-kana="ん">ん</button>
+            <button id="backspace-key" class="utility-action" type="button">1文字削除</button>
+            <button id="clear-key" class="utility-action" type="button">クリア</button>
+          </div>
+        </section>
+
+        <section class="history-section" aria-labelledby="history-title">
+          <div class="section-heading">
+            <h2 id="history-title">検索履歴</h2>
+            <span class="divider-mark" aria-hidden="true">✣</span>
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- RESULT SCREEN -->
+    <section id="result-screen" class="screen" aria-label="検索結果画面">
+      <div class="top-controls">
+        <button id="back-to-search" class="soft-button" type="button">
+          <span aria-hidden="true">←</span> 戻る
+        </button>
+        <button class="icon-button settings-button" type="button" data-open-settings aria-label="設定">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 8.4A3.6 3.6 0 1 0 12 15.6 3.6 3.6 0 0 0 12 8.4Zm9 3.6-2.05-.8a7.4 7.4 0 0 0-.62-1.48l.88-2.02-1.9-1.9-2.02.88A7.4 7.4 0 0 0 13.8 6.05L13 4h-2l-.8 2.05a7.4 7.4 0 0 0-1.48.62L6.7 5.8 4.8 7.7l.88 2.02a7.4 7.4 0 0 0-.62 1.48L3 12v2l2.05.8c.15.52.36 1.02.62 1.48L4.8 18.3l1.9 1.9 2.02-.88c.46.26.96.47 1.48.62L11 22h2l.8-2.05a7.4 7.4 0 0 0 1.48-.62l2.02.88 1.9-1.9-.88-2.02c.26-.46.47-.96.62-1.48L21 14v-2Z"/>
+          </svg>
+        </button>
+      </div>
+
+      <header class="result-header">
+        <h1 id="result-title">検索結果</h1>
+        <p id="result-count" class="result-count"></p>
+      </header>
+
+      <div id="results-viewport" class="results-viewport" tabindex="0" aria-label="検索結果。マウスホイールで横にスクロールできます">
+        <div id="results-strip" class="results-strip"></div>
+      </div>
+
+      <div class="result-footer">
+        <p>マウスホイールを下に回すと左へ読み進めます</p>
+        <div class="scroll-indicator" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS SCREEN -->
+    <section id="settings-screen" class="screen" aria-label="設定画面">
+      <div class="settings-layout">
+        <button id="settings-back" class="soft-button" type="button">
+          <span aria-hidden="true">←</span> 戻る
+        </button>
+        <h1>設定</h1>
+
+        <div class="settings-panel">
+          <label class="setting-row">
+            <span>サウンド</span>
+            <input id="setting-sound" type="checkbox">
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+          <label class="setting-row">
+            <span>ヒント機能</span>
+            <input id="setting-hint" type="checkbox">
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+          <label class="setting-row">
+            <span>演出スキップ</span>
+            <input id="setting-skip" type="checkbox">
+            <span class="switch" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- PAGE TURN CUT-IN -->
+  <div id="transition-overlay" class="transition-overlay" aria-hidden="true">
+    <div class="transition-still still-1"></div>
+    <div class="transition-still still-2"></div>
+    <div class="transition-still still-3"></div>
+  </div>
+
+  <!-- EVENT OVERLAY -->
+  <div id="event-overlay" class="event-overlay" aria-hidden="true">
+    <div class="event-text-wrap">
+      <p id="event-text" class="event-text"></p>
+      <span class="event-next">クリックで進む</span>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
