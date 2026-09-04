@@ -285,6 +285,7 @@ button:focus-visible, input:focus-visible, .results-viewport:focus-visible {
 .results-strip {
   height: 100%;
   display: flex;
+  flex-direction: row;
   align-items: stretch;
   gap: 0;
   width: max-content;
@@ -292,50 +293,71 @@ button:focus-visible, input:focus-visible, .results-viewport:focus-visible {
 }
 
 .dictionary-column {
-  width: 520px;
-  min-width: 520px;
+  width: 620px;
+  min-width: 620px;
   height: 100%;
-  padding: 22px 34px 30px;
+  padding: 24px 28px 26px;
   border-left: 1px solid var(--line);
   background: rgba(255,255,255,.20);
   overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
 }
 .dictionary-column:last-child { border-right: 1px solid var(--line); }
 
 .dictionary-entry {
   position: relative;
-  border-bottom: 1px solid var(--line);
-  padding: 24px 48px 24px 0;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  padding: 20px 24px 18px 20px;
+  border-left: 1px solid var(--line);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  overflow: hidden;
 }
-.dictionary-entry:last-child { border-bottom: 0; }
+.dictionary-entry:last-child { border-left: 0; }
+
 .entry-title {
-  margin: 0 0 10px;
+  margin: 0 0 0 18px;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 500;
-  letter-spacing: .07em;
+  letter-spacing: .08em;
+  line-height: 1.45;
+  white-space: nowrap;
 }
-.entry-title .notation { margin-left: 10px; font-size: 22px; }
+.entry-title .notation {
+  margin-top: 10px;
+  font-size: 22px;
+}
+
 .entry-description {
   margin: 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
   font-size: 16px;
-  line-height: 2.05;
+  line-height: 2.1;
   color: #2f4d68;
+  max-height: 100%;
+  overflow: hidden;
 }
 .hint-mark {
-  padding: .06em .18em .08em;
+  padding: .12em .06em;
   border-radius: 3px;
   background: var(--yellow);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 .hint-mark:nth-of-type(even) { background: var(--hint-blue); }
 
 .bookmark-button {
   position: absolute;
-  right: 4px;
-  top: 24px;
+  left: 8px;
+  bottom: 14px;
   width: 34px;
   height: 42px;
+  writing-mode: horizontal-tb;
   border: 0;
   background: transparent;
   cursor: pointer;
