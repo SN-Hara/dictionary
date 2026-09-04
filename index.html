@@ -33,8 +33,10 @@
 
         <section class="keyboard-area" aria-label="五十音ソフトウェアキーボード">
           <div id="kana-keyboard" class="kana-keyboard"></div>
-          <button id="backspace-button" class="utility-key" type="button">1文字削除</button>
-          <button id="clear-button" class="utility-key" type="button">クリア</button>
+          <div class="keyboard-utilities">
+            <button id="backspace-button" class="utility-key" type="button">1文字削除</button>
+            <button id="clear-button" class="utility-key" type="button">クリア</button>
+          </div>
         </section>
 
         <section class="history-area">
@@ -59,11 +61,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ページめくり演出 -->
-    <div id="page-turn" class="page-turn" aria-hidden="true">
-      <div class="page-turn-sheet"></div>
-    </div>
   </main>
 
   <script type="module" src="./js/app.js"></script>

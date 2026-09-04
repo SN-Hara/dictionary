@@ -1,19 +1,18 @@
 const DATA_URL = "./data/dictionary.json";
 const HISTORY_KEY = "dictionarySearchHistory";
-const MAX_HISTORY = 10;
+const MAX_HISTORY = 20;
 
-// 五十音表。濁音・半濁音・拗音・促音・長音は置かない。
-const KANA_KEYS = [
-  "あ","い","う","え","お",
-  "か","き","く","け","こ",
-  "さ","し","す","せ","そ",
-  "た","ち","つ","て","と",
-  "な","に","ぬ","ね","の",
-  "は","ひ","ふ","へ","ほ",
-  "ま","み","む","め","も",
-  "や","ゆ","よ",
-  "ら","り","る","れ","ろ",
-  "わ","を","ん"
+/*
+  5行×10列。
+  配列は画面上の「左→右」の順。
+  右上が「あ」になる。
+*/
+const KANA_GRID = [
+  ["わ","ら","や","ま","は","な","た","さ","か","あ"],
+  [null,"り",null,"み","ひ","に","ち","し","き","い"],
+  ["ん","る","ゆ","む","ふ","ぬ","つ","す","く","う"],
+  [null,"れ",null,"め","へ","ね","て","せ","け","え"],
+  ["を","ろ","よ","も","ほ","の","と","そ","こ","お"]
 ];
 
 const searchScreen = document.querySelector("#search-screen");
@@ -29,7 +28,6 @@ const backButton = document.querySelector("#back-button");
 const resultQuery = document.querySelector("#result-query");
 const resultContent = document.querySelector("#result-content");
 const resultScroll = document.querySelector("#result-scroll");
-const pageTurn = document.querySelector("#page-turn");
 
 let dictionary = [];
 
@@ -80,7 +78,15 @@ function bindEvents() {
 function buildKeyboard() {
   const fragment = document.createDocumentFragment();
 
-  KANA_KEYS.forEach((kana) => {
+  KANA_GRID.flat().forEach((kana) => {
+    if (kana === null) {
+      const blank = document.createElement("div");
+      blank.className = "kana-blank";
+      blank.setAttribute("aria-hidden", "true");
+      fragment.appendChild(blank);
+      return;
+    }
+
     const button = document.createElement("button");
     button.type = "button";
     button.className = "kana-key";
@@ -127,17 +133,15 @@ function runSearch(rawQuery, saveHistory) {
     renderHistory();
   }
 
-  playPageTurn(() => showResults(rawQuery, matches));
+  // 今回はページ遷移演出なし。検索後すぐ結果を表示する。
+  showResults(rawQuery, matches);
 }
 
 function validateQuery(rawQuery) {
   const chars = Array.from(rawQuery);
 
-  // 仕様：入力文字数は2文字。
   if (chars.length !== 2) return { ok: false };
 
-  // ひらがな、濁音・半濁音を含むひらがな、小書きかな、長音記号を許可。
-  // カタカナは現段階では対象外。
   const kanaPattern = /^[ぁ-ゖー]{2}$/u;
   if (!kanaPattern.test(rawQuery)) return { ok: false };
 
@@ -147,10 +151,8 @@ function validateQuery(rawQuery) {
 function normalizeKana(text) {
   if (!text) return "";
 
-  // 濁音・半濁音を分解し、濁点・半濁点を除去。
   let value = text.normalize("NFD").replace(/[\u3099\u309A]/g, "");
 
-  // 小書きかなを通常サイズへ。
   const smallKanaMap = {
     "ぁ":"あ", "ぃ":"い", "ぅ":"う", "ぇ":"え", "ぉ":"お",
     "ゃ":"や", "ゅ":"ゆ", "ょ":"よ", "っ":"つ", "ゎ":"わ",
@@ -159,8 +161,6 @@ function normalizeKana(text) {
 
   value = Array.from(value).map((char) => smallKanaMap[char] ?? char).join("");
 
-  // 長音は直前のかなに応じて母音へ置換。
-  // 例：かー→かあ
   const chars = Array.from(value);
   const result = [];
 
@@ -189,14 +189,13 @@ function getVowel(kana) {
     if (group.includes(kana)) return vowel;
   }
 
-  // 判定できない場合は、長音記号をそのまま残す。
   return "ー";
 }
 
 function showResults(query, matches) {
   searchScreen.classList.remove("is-active");
   resultScreen.classList.add("is-active");
-  resultQuery.textContent = `検索：「${query}」`;
+  resultQuery.textContent = `検索：「${query}」 / ${matches.length}件`;
   resultContent.replaceChildren();
 
   matches.forEach((entry) => {
@@ -217,26 +216,20 @@ function showResults(query, matches) {
     resultContent.appendChild(article);
   });
 
-  resultScroll.scrollLeft = 0;
-  resultScroll.focus();
+  /*
+    row-reverse で右から左へ項目が並ぶため、
+    初期表示を一番右側に合わせる。
+  */
+  requestAnimationFrame(() => {
+    resultScroll.scrollLeft = resultScroll.scrollWidth;
+    resultScroll.focus();
+  });
 }
 
 function showSearchScreen() {
   resultScreen.classList.remove("is-active");
   searchScreen.classList.add("is-active");
   searchInput.focus();
-}
-
-function playPageTurn(onComplete) {
-  pageTurn.classList.remove("is-playing");
-  // アニメーションを再スタートさせるため reflow。
-  void pageTurn.offsetWidth;
-  pageTurn.classList.add("is-playing");
-
-  window.setTimeout(() => {
-    pageTurn.classList.remove("is-playing");
-    onComplete();
-  }, 460);
 }
 
 function setMessage(message, isError = false) {
