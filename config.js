@@ -6,7 +6,7 @@ window.GAME_CONFIG = {
   repairRevealMs: 700,
   dialRotateMs: 650,
   transitionMs: 1100,
-  eventClickDelayMs: 300,
+  eventClickDelayMs: 1000,
   assets: {
     fontRegular: "assets/LINESeedJP_OTF_Rg.woff2",
     fontBold: "assets/LINESeedJP_OTF_Bd.woff2",
