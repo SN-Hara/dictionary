@@ -10,7 +10,7 @@ window.GAME_CONFIG = {
   assets: {
     fontRegular: "assets/LINESeedJP_OTF_Rg.woff2",
     fontBold: "assets/LINESeedJP_OTF_Bd.woff2",
-    bgm: "assets/Audiostock_895919.wav",
+    bgm: "assets/Audiostock_895919.mp3",
     inputSound: "assets/inputSound.mp3",
     searchSound: "assets/searchSound.mp3",
     repairSound: "assets/repairSound.mp3",
