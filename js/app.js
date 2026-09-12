@@ -388,7 +388,6 @@
     await Promise.all(dials.map((d, i) => turnDial(d, key[i])));
     state.history = [key, ...state.history.filter(x => x !== key)];
     save();
-    renderHistory();
     renderResults(rows);
     await transition(true);
   }
@@ -405,6 +404,7 @@
     $("search-status").textContent = "";
     $("search-form").inert = false;
     $("history").inert = false;
+    renderHistory();
     await transition(false);
     save();
   };
