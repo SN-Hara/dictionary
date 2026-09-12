@@ -585,7 +585,8 @@
   });
   let activeEvent = null,
     scriptIndex = 0,
-    scripts = [];
+    scripts = [],
+    eventClickReadyAt = 0;
 
   function checkEvent() {
     activeEvent = C.eligibleEvent(data.events, state.flags, state.played);
@@ -601,6 +602,7 @@
   function showScript() {
     const s = scripts[scriptIndex];
     const el = $("event-text");
+    eventClickReadyAt = performance.now() + config.eventClickDelayMs;
     el.hidden = false;
     el.textContent = s.text;
     el.focus({
@@ -623,7 +625,15 @@
     focusSearch();
   }
   document.addEventListener("click", e => {
-    if (!activeEvent || $("settings").open || e.target.closest("#settings-open,#settings")) return;
+    if (
+      !activeEvent ||
+      performance.now() < eventClickReadyAt ||
+      $("settings").open ||
+      e.target.closest("#settings-open,#settings")
+    ) {
+      return;
+    }
+
     advanceEvent();
   });
 
