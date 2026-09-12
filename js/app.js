@@ -315,15 +315,21 @@
     from.inert = true;
     $("settings-open").disabled = true;
     $("brand").style.opacity = "0";
-    await Promise.all([animate(from, [{
-      opacity: 1
-    }, {
-      opacity: 0
-    }], 180), animate($("brand"), [{
-      opacity: 1
-    }, {
-      opacity: 0
-    }], 160)]);
+    $("settings-open").style.opacity = "0";
+    await Promise.all([
+      animate(from, [
+        { opacity: 1 },
+        { opacity: 0 }
+      ], 180),
+      animate($("brand"), [
+        { opacity: 1 },
+        { opacity: 0 }
+      ], 160),
+      animate($("settings-open"), [
+        { opacity: 1 },
+        { opacity: 0 }
+      ], 180)
+    ]);
     from.hidden = true;
     positionDisc(results);
     await wait(config.transitionMs * .72);
@@ -331,15 +337,21 @@
     brandPosition(results);
     to.hidden = false;
     $("brand").style.opacity = "1";
-    await Promise.all([animate(to, [{
-      opacity: 0
-    }, {
-      opacity: 1
-    }], config.transitionMs * .28), animate($("brand"), [{
-      opacity: 0
-    }, {
-      opacity: 1
-    }], config.transitionMs * .28)]);
+    $("settings-open").style.opacity = "1";
+    await Promise.all([
+      animate(to, [
+        { opacity: 0 },
+        { opacity: 1 }
+      ], config.transitionMs * .28),
+      animate($("brand"), [
+        { opacity: 0 },
+        { opacity: 1 }
+      ], config.transitionMs * .28),
+      animate($("settings-open"), [
+        { opacity: 0 },
+        { opacity: 1 }
+      ], config.transitionMs * .28)
+    ]);
     to.inert = false;
     $("settings-open").disabled = false;
     state.screen = results ? "results" : "search";
