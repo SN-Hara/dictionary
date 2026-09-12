@@ -250,7 +250,7 @@ window.GAME_DATA = {
       "notation": "秘密",
       "description": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほ",
       "keywords": [],
-      "flag": "",
+      "flag": "Secret",
       "id": "ひみ-031"
     }
   ],
